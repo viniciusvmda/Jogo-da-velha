@@ -1,12 +1,10 @@
 #encoding: utf-8
 '''----------------------------------------------------------------------
-| Tarefa 4 - Implemente o Jogo da velha usando o algoritmo minimax
-| 
-| Renan Mateus Bernardo Nascimento
-| Vinícius Magalhães D'Assunção
+| Tarefa 4 - Implemente o Jogo da velha utilizando o algoritmo minimax	|
+| 																		|
+| Renan Mateus Bernardo Nascimento										|
+| Vinícius Magalhães D'Assunção											|
 ----------------------------------------------------------------------'''
-
-
 
 class Tabuleiro:
 
@@ -14,7 +12,7 @@ class Tabuleiro:
 	BOLA 	= 'o'
 	XIS 	= 'x'
 	VAZIO 	= ' '
-	array_bola = []
+	array_bola = []			# Possui a seguência que faz bola ser vencedor
 	array_xis = []
 
 
@@ -82,6 +80,8 @@ class Tabuleiro:
 			print(' ', end='')
 			for j in range(0, self.tamanho):
 				print(self.tabuleiro[i][j], end='')
-				if j < self.tamanho-1:
+				if j < self.tamanho - 1:
 					print(' | ', end='')
-			print('\n-----------')
+			if i < self.tamanho - 1:
+				print('\n' + (3 * self.tamanho + self.tamanho - 1) * '-')
+		print (' ')

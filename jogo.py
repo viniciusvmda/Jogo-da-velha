@@ -6,7 +6,14 @@
 | Vinícius Magalhães D'Assunção											|
 ----------------------------------------------------------------------'''
 
-from tabuleiro import Tabuleiro
+from Tabuleiro import Tabuleiro
 
-tabuleiro = Tabuleiro(3)
-tabuleiro.imprimirTabuleiro()
+class Jogo:
+
+	tabuleiro = None
+	arvore = []
+
+	def __init__(self):
+		self.tabuleiro = Tabuleiro()
+
+	def montaArovre(self,)
