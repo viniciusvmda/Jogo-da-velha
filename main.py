@@ -7,6 +7,8 @@
 ----------------------------------------------------------------------'''
 
 from tabuleiro import Tabuleiro
+from jogo import Jogo
 
-tabuleiro = Tabuleiro(3)
-tabuleiro.imprimirTabuleiro()
+jogo_velha = Jogo(3, Tabuleiro.XIS)
+jogo_velha.montaArvore()
+jogo_velha.imprimeArvore()

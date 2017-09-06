@@ -7,19 +7,21 @@
 ----------------------------------------------------------------------'''
 
 class Tabuleiro:
-
-	tabuleiro = []			# Array 3x3 para representar o tabuleiro
+	# Atributos estáticos
 	BOLA 	= 'o'
 	XIS 	= 'x'
 	VAZIO 	= ' '
-	array_bola = []			# Possui a seguência que faz bola ser vencedor
-	array_xis = []
-
-
+	EMPATE 	= '='
+	
+	
 	def __init__(self, tamanho):
+		# Tamanho do tabuleiro
 		self.tamanho 	= tamanho
+		# Possui a sequência que faz bola ser vencedor
 		self.array_bola = self.tamanho * [self.BOLA]
+		# Possui a sequência que faz xis ser vencedor
 		self.array_xis 	= self.tamanho * [self.XIS]
+		# Array 3x3 para representar o tabuleiro
 		self.tabuleiro = [ self.tamanho * [self.VAZIO] for i in range(0, self.tamanho) ]
 
 
@@ -38,9 +40,9 @@ class Tabuleiro:
 
 	def verificaLinha(self):
 		for i in range(0, self.tamanho):
-			if self.tabuleiro[i] == array_bola:
+			if self.tabuleiro[i] == self.array_bola:
 				return self.BOLA
-			if self.tabuleiro[i] == array_xis:
+			if self.tabuleiro[i] == self.array_xis:
 				return self.XIS
 
 		return False
@@ -48,31 +50,44 @@ class Tabuleiro:
 
 	def verificaColuna(self):
 		for j in range(0, self.tamanho):
-			if [ self.tabuleiro[i][j] for i in range(0, self.tamanho) ] == array_bola:
+			if [ self.tabuleiro[i][j] for i in range(0, self.tamanho) ] == self.array_bola:
 				return self.BOLA
-			if [ self.tabuleiro[i][j] for i in range(0, self.tamanho) ] == array_xis:
+			if [ self.tabuleiro[i][j] for i in range(0, self.tamanho) ] == self.array_xis:
 				return self.XIS
 		return False
 
 
 	def verificaDiagonal(self):
-		if [ self.tabuleiro[i][i] for i in range(0, self.tamanho) ] == array_bola:
+		if [ self.tabuleiro[i][i] for i in range(0, self.tamanho) ] == self.array_bola:
 			return self.BOLA		
-		if [ self.tabuleiro[i][i] for i in range(0, self.tamanho) ] == array_xis:
+		if [ self.tabuleiro[i][i] for i in range(0, self.tamanho) ] == self.array_xis:
 			return self.XIS
 		return False
 
 
-	def verificaTermino(self):
-		ganhouLinha = verificaLinha()
+	def verificaEmpate(self):
+		for i in range(0, self.tamanho):
+			for j in range(0, self.tamanho):
+				if self.tabuleiro[i][j] == self.VAZIO:
+					return False
+		return self.EMPATE
+
+
+	'''
+		Retorna o jogador vencedor ou False se não houve ganhador
+	'''
+	def ganhou(self):
+		ganhouLinha = self.verificaLinha()
 		if ganhouLinha:
 			return ganhouLinha
-		ganhouColuna = verificaColuna()
+		ganhouColuna = self.verificaColuna()
 		if ganhouColuna:
 			return ganhouColuna
-		ganhouDiagonal = verificaDiagonal()
+		ganhouDiagonal = self.verificaDiagonal()
 		if ganhouDiagonal:
 			return ganhouDiagonal
+		empate = self.verificaEmpate()
+		return empate
 
 
 	def imprimirTabuleiro(self):
@@ -84,4 +99,4 @@ class Tabuleiro:
 					print(' | ', end='')
 			if i < self.tamanho - 1:
 				print('\n' + (3 * self.tamanho + self.tamanho - 1) * '-')
-		print (' ')
+		print(' ')
