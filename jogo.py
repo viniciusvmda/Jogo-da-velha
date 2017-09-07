@@ -15,9 +15,14 @@ class Jogo:
 
 	def __init__(self, tamanho, jogador):
 		self.tamanho = tamanho												# tamanho do tabuleiro
-		self.jogador = jogador              								# jogador dono da jogada
+		self.jogador = jogador              								# peça correspondente ao jogador
+		self.maquina = Tabuleiro.XIS										# peça correspondente à jogador
+
+		if jogador == Tabuleiro.XIS:
+			self.maquina = Tabuleiro.BOLA
+		
 		self.tabuleiro = Tabuleiro(tamanho)									# tabuleiro do jogo, alterado a cada jogada
-		self.arvore = Jogada(self.tabuleiro, None, self.jogador, None)		# arvore de jogadas
+		self.arvore = Jogada(self.tabuleiro, None, self.maquina, None)		# arvore de jogadas
 
 
 	def montaArvore(self):
@@ -55,7 +60,7 @@ class Jogo:
 							fila.append(proxima_jogada)
 						else:
 							# Se o jogo terminou adiciona utilidade à jogada
-							if ganhou == self.jogador:
+							if ganhou == self.maquina:
 								proxima_jogada.adicionarUtilidade(Jogada.MAX)
 							elif ganhou == Tabuleiro.EMPATE:
 								proxima_jogada.adicionarUtilidade(Jogada.MED)
@@ -81,17 +86,68 @@ class Jogo:
 			# Pega a utilidade da próxima jogada
 			utilidade = self.minimax(proxima)
 			# Se o jogador for o computador, faz o max da utilidade, senão faz o min
-			if jogada.jogador == self.jogador
-				jogada.utilidade = max(jogador.utilidade, utilidade)
+			if jogada.jogador == self.maquina:
+				jogada.utilidade = max(jogada.utilidade, utilidade)
 			else:
-				jogada.utilidade = min(jogador.utilidade, utilidade)
+				jogada.utilidade = min(jogada.utilidade, utilidade)
+		
+		return jogada.utilidade
 
 
 	def jogar(self):
 		self.montaArvore()
 		self.minimax(self.arvore)
 		
+		vez = self.maquina
+		proxima_vez = self.jogador
+		jogada = self.arvore
+		ganhou = False
 
+		while not ganhou:
+			x, y = 0, 0
+			if vez == self.maquina:
+				i = self.lerJogadaMaquina(jogada)
+				jogada = jogada.prox[i]
+				x, y = jogada.jogada
+				proxima_vez = self.jogador
+			else:
+				x, y = self.lerJogadaHumano()
+				for proxima in jogada.prox:
+					if proxima.jogada == (x,y):
+						jogada = proxima
+						break
+				proxima_vez = self.maquina
+
+			self.tabuleiro.tabuleiro[x][y] = vez
+			aux = vez
+			vez = proxima_vez
+			proxima_vez = aux
+			ganhou = self.tabuleiro.ganhou()
+		
+		print('Jogador (' + ganhou + ') venceu!')
+
+		
+	def lerJogadaHumano(self):
+		self.tabuleiro.imprimirTabuleiro()
+		x, y = input('Sua vez (x,y): ').split(',')
+		x, y = int(x), int(y)
+		while x < 0 and x >= self.tamanho and y < 0 and y >= self.tamanho and self.tabuleiro.tabuleiro[x][y] != Tabuleiro.VAZIO:
+			print('Valor inválido!')
+			x, y = input('Sua vez (x,y): ').split(',')
+			x, y = int(x), int(y)
+		return x, y
+
+	
+	'''
+		Retorna o índice da lista de próximas jogadas da jogada recebida com a maior utilidade 
+	'''
+	def lerJogadaMaquina(self, jogada):
+		maior = 0				# salva o índice da jogada de maior utilidade
+		for i, proxima in enumerate(jogada.prox[1:]):
+			if proxima.utilidade > jogada.prox[maior].utilidade:
+				maior = i + 1	# soma 1 pois começa o loop do segundo elemento	
+		return maior
+	
 
 	def imprimeArvore(self):
 		# fila para preenchimento em largura
