@@ -9,6 +9,7 @@
 from tabuleiro import Tabuleiro
 from jogo import Jogo
 
+
 # Lê parâmetros para o jogo do usuário
 tamanho = int(input('Entre com o tamanho do tabuleiro: '))
 while tamanho <= 1:
@@ -22,4 +23,5 @@ while jogador != Tabuleiro.XIS and jogador != Tabuleiro.BOLA:
 
 jogo_velha = Jogo(tamanho, jogador)
 jogo_velha.jogar()
-#jogo_velha.imprimeArvore()
+#jogo_velha = Jogo(2, Tabuleiro.BOLA)
+#jogo_velha.imprimirArvore()

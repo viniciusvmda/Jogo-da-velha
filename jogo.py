@@ -42,7 +42,7 @@ class Jogo:
 						# Cria uma copia do tabuleiro atual
 						proximo_tabuleiro = copy.deepcopy(jogada_atual.tabuleiro)
 						
-						# Preenhce o proximo tabuleiro com a proxima jogada
+						# Preenche o proximo tabuleiro com a proxima jogada
 						proximo_jogador = Tabuleiro.BOLA
 						if jogada_atual.jogador == Tabuleiro.XIS:
 							proximo_tabuleiro.marcaXis(i, j)
@@ -53,20 +53,19 @@ class Jogo:
 						proxima_jogada = Jogada(proximo_tabuleiro, (i,j), proximo_jogador, jogada_atual)
 						jogada_atual.adicionarProximaJogada(proxima_jogada)
 						
-						# Verifica se o jogo terminou
+						# Verifica se o jogo terminou com a próxima jogada
 						ganhou = proxima_jogada.tabuleiro.ganhou()
 						if not ganhou:
 							# Enfileira proxima jogada
 							fila.append(proxima_jogada)
 						else:
-							# Se o jogo terminou adiciona utilidade à jogada
-							if ganhou == self.maquina:
+							# Adiciona utilidade à jogada
+							if ganhou == self.maquina:			# Máquina venceu
 								proxima_jogada.adicionarUtilidade(Jogada.MAX)
-							elif ganhou == Tabuleiro.EMPATE:
+							elif ganhou == Tabuleiro.EMPATE:	# Empate
 								proxima_jogada.adicionarUtilidade(Jogada.MED)
-							else:
+							else:								# Humano venceu
 								proxima_jogada.adicionarUtilidade(Jogada.MIN)
-
 
 
 	'''
@@ -81,15 +80,21 @@ class Jogo:
 			# Retorna utilidade da jogada 
 			return jogada.utilidade
 
-		# Percorre as próximas jogada
+		# Percorre as próximas jogadas
 		for proxima in jogada.prox:
 			# Pega a utilidade da próxima jogada
 			utilidade = self.minimax(proxima)
 			# Se o jogador for o computador, faz o max da utilidade, senão faz o min
 			if jogada.jogador == self.maquina:
-				jogada.utilidade = max(jogada.utilidade, utilidade)
+				if jogada.utilidade != Jogada.VAZIO: 
+					jogada.utilidade = max(jogada.utilidade, utilidade)
+				else:
+					jogada.utilidade = utilidade
 			else:
-				jogada.utilidade = min(jogada.utilidade, utilidade)
+				if jogada.utilidade != Jogada.VAZIO: 
+					jogada.utilidade = min(jogada.utilidade, utilidade)
+				else:
+					jogada.utilidade = utilidade
 		
 		return jogada.utilidade
 
@@ -124,14 +129,14 @@ class Jogo:
 			proxima_vez = aux
 			ganhou = self.tabuleiro.ganhou()
 		
-		print('Jogador (' + ganhou + ') venceu!')
-
+		self.imprimirGanhador(ganhou)
 		
+
 	def lerJogadaHumano(self):
 		self.tabuleiro.imprimirTabuleiro()
 		x, y = input('Sua vez (x,y): ').split(',')
 		x, y = int(x), int(y)
-		while x < 0 and x >= self.tamanho and y < 0 and y >= self.tamanho and self.tabuleiro.tabuleiro[x][y] != Tabuleiro.VAZIO:
+		while x < 0 or x >= self.tamanho or y < 0 or y >= self.tamanho or self.tabuleiro.tabuleiro[x][y] != Tabuleiro.VAZIO:
 			print('Valor inválido!')
 			x, y = input('Sua vez (x,y): ').split(',')
 			x, y = int(x), int(y)
@@ -149,7 +154,16 @@ class Jogo:
 		return maior
 	
 
-	def imprimeArvore(self):
+	def imprimirGanhador(self, ganhou):
+		self.tabuleiro.imprimirTabuleiro()
+		if ganhou == Tabuleiro.EMPATE:
+			print('Jogo empatado!')
+		print('Jogador (' + ganhou + ') venceu!')
+
+
+	def imprimirArvore(self):
+		self.montaArvore()
+		self.minimax(self.arvore)
 		# fila para preenchimento em largura
 		fila = [self.arvore]
 		# Enquanto a fila não estiver vazia
@@ -157,6 +171,7 @@ class Jogo:
 			jogada_atual = fila.pop(0)
 			jogada_atual.tabuleiro.imprimirTabuleiro()
 			fila += jogada_atual.prox
+			print('Utilidade: ' + str(jogada_atual.utilidade))
 			if not len(jogada_atual.prox):
 				print("terminou")
 			print("\n\n")
