@@ -11,6 +11,7 @@ class Jogada:
     MAX = 1
     MED = 0
     MIN = -1
+    VAZIO = -2
 
 
     def __init__(self, tabuleiro, jogada, jogador, ant):
@@ -19,7 +20,7 @@ class Jogada:
         self.tabuleiro = tabuleiro          # estado atual do tabuleiro
         self.ant = ant                      # instância da jogada anterior
         self.prox = []                      # lista com próximas jogadas
-        self.utilidade = self.MED
+        self.utilidade = self.VAZIO
 
 
     '''
