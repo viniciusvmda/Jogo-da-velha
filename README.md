@@ -8,7 +8,7 @@ Jogo da velha que utiliza o algoritmo de busca **Minimax**.
 
 ## Instruções de execução
 
-Execute o seguinte comando no terminal
+Execute o seguinte comando no terminal:
 
 ``
 python3 main.py

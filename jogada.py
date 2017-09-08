@@ -14,13 +14,13 @@ class Jogada:
     VAZIO = -2
 
 
-    def __init__(self, tabuleiro, jogada, jogador, ant):
+    def __init__(self, tabuleiro, jogada, jogador):
         self.jogada = jogada                # tupla contendo as coordenadas da jogada
         self.jogador = jogador              # jogador dono da jogada
         self.tabuleiro = tabuleiro          # estado atual do tabuleiro
-        self.ant = ant                      # instância da jogada anterior
         self.prox = []                      # lista com próximas jogadas
         self.utilidade = self.VAZIO
+        self.melhor_escolha = -2            # armazena o índice da melhor jogada entre as próximas 
 
 
     '''
