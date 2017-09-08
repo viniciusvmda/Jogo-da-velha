@@ -44,7 +44,6 @@ class Tabuleiro:
 				return self.BOLA
 			if self.tabuleiro[i] == self.array_xis:
 				return self.XIS
-
 		return False
 
 
@@ -58,10 +57,19 @@ class Tabuleiro:
 
 
 	def verificaDiagonal(self):
+		# Verifica diagonal principal
 		if [ self.tabuleiro[i][i] for i in range(0, self.tamanho) ] == self.array_bola:
 			return self.BOLA		
 		if [ self.tabuleiro[i][i] for i in range(0, self.tamanho) ] == self.array_xis:
 			return self.XIS
+		
+		# Verifica diagonal secundária
+		t = self.tamanho - 1
+		if [ self.tabuleiro[i][t - i] for i in range(0, self.tamanho) ] == self.array_bola:
+			return self.BOLA
+		if [ self.tabuleiro[i][t - i] for i in range(0, self.tamanho) ] == self.array_xis:
+			return self.XIS
+
 		return False
 
 
@@ -91,6 +99,7 @@ class Tabuleiro:
 
 
 	def imprimirTabuleiro(self):
+		print()
 		for i in range(0, self.tamanho):
 			print(' ', end='')
 			for j in range(0, self.tamanho):

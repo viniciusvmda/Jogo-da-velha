@@ -9,19 +9,20 @@
 import copy
 from tabuleiro import Tabuleiro
 from jogada import Jogada
+from random import randrange
 
 
 class Jogo:
 
-	def __init__(self, tamanho, jogador):
-		self.tamanho = tamanho												# tamanho do tabuleiro
+	def __init__(self, jogador):
+		self.tamanho = 3													# tamanho do tabuleiro 3x3
 		self.jogador = jogador              								# peça correspondente ao jogador
 		self.maquina = Tabuleiro.XIS										# peça correspondente à jogador
 
 		if jogador == Tabuleiro.XIS:
 			self.maquina = Tabuleiro.BOLA
 		
-		self.tabuleiro = Tabuleiro(tamanho)									# tabuleiro do jogo, alterado a cada jogada
+		self.tabuleiro = Tabuleiro(self.tamanho)							# tabuleiro do jogo, alterado a cada jogada
 		self.arvore = Jogada(self.tabuleiro, None, self.maquina, None)		# arvore de jogadas
 
 
@@ -99,19 +100,36 @@ class Jogo:
 		return jogada.utilidade
 
 
+	'''
+		Monta a árvore antes e utiliza o minimax antes de iniciar a partida
+		Alterna a vez da jogada entre máquina e humano até a partida terminar
+	'''
 	def jogar(self):
-		self.montaArvore()
-		self.minimax(self.arvore)
+		vez = self.maquina			# Guarda quem é o jogador da vez
+		proxima_vez = self.jogador	# Guarda quem será o próximo a jogar
+		ganhou = False				# Variável auxiliar para informar se a partida acabou
 		
-		vez = self.maquina
-		proxima_vez = self.jogador
-		jogada = self.arvore
-		ganhou = False
+		# Decide quem irá começar primeiro
+		moeda = randrange(2)
+		if moeda:
+			print('\nMáquina começa primeiro.')
+		else:
+			x, y = self.lerJogadaHumano()
+			self.tabuleiro.tabuleiro[x][y] = self.jogador
+			self.arvore = Jogada(self.tabuleiro, (x, y), self.jogador, None)
+			vez = self.maquina
+			proxima_vez = self.jogador
+		
+		jogada = self.arvore		# Ponteiro para a jogada atual na árvore
+		self.montaArvore()
+		jogada.utilidade = self.minimax(self.arvore)
 
 		while not ganhou:
 			x, y = 0, 0
 			if vez == self.maquina:
+				# Retorna o índice da próxima jogada da máquina com maior valor de utilidade
 				i = self.lerJogadaMaquina(jogada)
+				# Move o ponteiro para esta jogada
 				jogada = jogada.prox[i]
 				x, y = jogada.jogada
 				proxima_vez = self.jogador
@@ -123,7 +141,9 @@ class Jogo:
 						break
 				proxima_vez = self.maquina
 
+			# Marca o tabuleiro com a jogada do turno
 			self.tabuleiro.tabuleiro[x][y] = vez
+			# Altera o jogador do turno
 			aux = vez
 			vez = proxima_vez
 			proxima_vez = aux
@@ -132,13 +152,16 @@ class Jogo:
 		self.imprimirGanhador(ganhou)
 		
 
+	'''
+		Lê do usuário as coordenadas da próxima jogada e as retorna
+	'''
 	def lerJogadaHumano(self):
 		self.tabuleiro.imprimirTabuleiro()
-		x, y = input('Sua vez (x,y): ').split(',')
+		x, y = input('\nSua vez. Entre com as coordenadas x,y: ').split(',')
 		x, y = int(x), int(y)
 		while x < 0 or x >= self.tamanho or y < 0 or y >= self.tamanho or self.tabuleiro.tabuleiro[x][y] != Tabuleiro.VAZIO:
 			print('Valor inválido!')
-			x, y = input('Sua vez (x,y): ').split(',')
+			x, y = input('Sua vez. Entre com as coordenadas x,y: ').split(',')
 			x, y = int(x), int(y)
 		return x, y
 
@@ -148,7 +171,11 @@ class Jogo:
 	'''
 	def lerJogadaMaquina(self, jogada):
 		maior = 0				# salva o índice da jogada de maior utilidade
+		
 		for i, proxima in enumerate(jogada.prox[1:]):
+			# Verifica se esta jogada ganha o jogo
+			if proxima.utilidade == Jogada.MAX and not len(proxima.prox):
+				return i + 1
 			if proxima.utilidade > jogada.prox[maior].utilidade:
 				maior = i + 1	# soma 1 pois começa o loop do segundo elemento	
 		return maior
@@ -157,8 +184,9 @@ class Jogo:
 	def imprimirGanhador(self, ganhou):
 		self.tabuleiro.imprimirTabuleiro()
 		if ganhou == Tabuleiro.EMPATE:
-			print('Jogo empatado!')
-		print('Jogador (' + ganhou + ') venceu!')
+			print('\nJogo empatado!')
+		else:
+			print('\nJogador (' + ganhou + ') venceu!')
 
 
 	def imprimirArvore(self):
