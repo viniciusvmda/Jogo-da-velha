@@ -19,7 +19,7 @@ class Jogada:
         self.jogador = jogador              # jogador dono da jogada
         self.tabuleiro = tabuleiro          # estado atual do tabuleiro
         self.prox = []                      # lista com próximas jogadas
-        self.utilidade = self.VAZIO
+        self.utilidade = self.VAZIO         # fator de utilidade da jogada
         self.melhor_escolha = -2            # armazena o índice da melhor jogada entre as próximas 
 
 

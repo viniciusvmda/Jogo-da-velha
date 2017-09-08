@@ -144,6 +144,7 @@ class Jogo:
 			if vez == self.maquina:
 				# Retorna o índice da próxima jogada da máquina com maior valor de utilidade
 				i = jogada.melhor_escolha
+				self.imprimirMelhoresJogadas(jogada.prox, i)
 				# Move o ponteiro para esta jogada
 				jogada = jogada.prox[i]
 				x, y = jogada.jogada
@@ -187,6 +188,17 @@ class Jogo:
 			print('\nJogo empatado!')
 		else:
 			print('\nJogador (' + ganhou + ') venceu!')
+
+
+
+	def imprimirMelhoresJogadas(self, proximas, melhor):
+		u = proximas[melhor].utilidade
+		print('\nMelhores jogadas para a máquina (utilidade = ' + str(u) + '):\n')
+		for i, jogada in enumerate(proximas):
+			if jogada.utilidade == u:
+				jogada.tabuleiro.imprimirTabuleiro()
+				print()
+		print('________________\n')
 
 
 	def imprimirArvore(self):

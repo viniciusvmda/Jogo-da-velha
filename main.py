@@ -18,8 +18,3 @@ while jogador != Tabuleiro.XIS and jogador != Tabuleiro.BOLA:
 
 jogo_velha = Jogo(jogador)
 jogo_velha.jogar()
-
-'''
-jogo_velha = Jogo(Tabuleiro.XIS)
-jogo_velha.imprimirArvore()
-'''
